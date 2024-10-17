@@ -6,30 +6,36 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bestShows: []
+      bestShows: {}, // Initialize as an empty object
     };
   }
 
   componentDidMount() {
-    console.log("componentDidMount success")
+    console.log("componentDidMount success");
     axios.get('/api/data')
       .then(res => {
-        console.log("data recieved: ", res.data);
-        this.setState({ bestShows: res.data[0] });
+        console.log("data received: ", res.data);
+        this.setState({ bestShows: res.data[0] }); // Ensure res.data[0] is an object
       })
-      .catch(alert);
+      .catch(error => {
+        console.error("Error fetching data: ", error);
+        alert("Error fetching data");
+      });
   }
 
-
   render() {
-    console.log("render bestShows: ", this.state.bestShows)
+    console.log("render bestShows: ", this.state.bestShows);
+    
+    // Ensure bestShows is defined and is an object
+    const showKeys = typeof this.state.bestShows === 'object' && this.state.bestShows !== null ? Object.keys(this.state.bestShows) : [];
+
     return (
       <div>
-        azure-mern-demo
+        <h1>Rico's Azure MERN Project</h1>
         <ul>
           {
-            Object.keys(this.state.bestShows).map((cur, idx) => (
-              <li>{cur} - {this.state.bestShows[cur]} </li>
+            showKeys.map((cur, idx) => (
+              <li key={idx}>{cur} - {this.state.bestShows[cur]}</li>
             ))
           }
         </ul>
